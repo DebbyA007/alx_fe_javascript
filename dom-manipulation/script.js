@@ -33,9 +33,9 @@ let filteredQuotes = [];
 // Initialize the application
 function initializeApp() {
     loadQuotes();
-    loadLastSelectedCategory();
+    loadLastSelectedCategory(); // This restores the last selected category when page loads
     populateCategories();
-    filterQuotes();
+    filterQuote(); // Updated to use singular function name
 }
 
 // Step 2.1: Populate Categories Dynamically
@@ -60,8 +60,8 @@ function populateCategories() {
     categoryFilter.value = currentCategory;
 }
 
-// Step 2.2: Filter Quotes Based on Selected Category
-function filterQuotes() {
+// Step 2.2: Filter Quotes Based on Selected Category (Note: Function name is filterQuote - singular)
+function filterQuote() {
     const categoryFilter = document.getElementById('categoryFilter');
     currentCategory = categoryFilter.value;
     
@@ -101,13 +101,20 @@ function showRandomQuote() {
 
 // Step 2.3: Remember the Last Selected Filter
 function saveLastSelectedCategory() {
+    // Save the selected category to local storage
     localStorage.setItem('lastSelectedCategory', currentCategory);
 }
 
 function loadLastSelectedCategory() {
+    // Restore the last selected category when the page loads
     const savedCategory = localStorage.getItem('lastSelectedCategory');
     if (savedCategory) {
         currentCategory = savedCategory;
+        // Set the dropdown to the saved category
+        const categoryFilter = document.getElementById('categoryFilter');
+        if (categoryFilter) {
+            categoryFilter.value = currentCategory;
+        }
     }
 }
 
@@ -129,7 +136,7 @@ function addQuote() {
         populateCategories();
         
         // Re-filter quotes to include the new quote if it matches current filter
-        filterQuotes();
+        filterQuote();
         
         // Clear the form
         document.getElementById('newQuoteText').value = '';
@@ -176,7 +183,7 @@ function importFromJsonFile(event) {
             quotes = importedQuotes;
             saveQuotes();
             populateCategories();
-            filterQuotes();
+            filterQuote();
             alert('Quotes imported successfully!');
         } catch (error) {
             alert('Error importing quotes. Please check the file format.');
