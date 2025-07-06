@@ -1,169 +1,215 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+/* Previous styles remain the same, add these new styles */
 
-body {
-    font-family: 'Arial', sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    min-height: 100vh;
+/* Sync Status Styles */
+.sync-status {
     display: flex;
     align-items: center;
-    justify-content: center;
-    padding: 20px;
-}
-
-.container {
-    background: white;
-    border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-    padding: 40px;
-    max-width: 600px;
-    width: 100%;
-}
-
-h1 {
-    text-align: center;
-    color: #333;
-    margin-bottom: 30px;
-    font-size: 2.5em;
-}
-
-h2 {
-    color: #555;
-    margin-bottom: 20px;
-    font-size: 1.5em;
-}
-
-.filter-section {
-    margin-bottom: 30px;
-    text-align: center;
-}
-
-.filter-section label {
-    display: block;
-    margin-bottom: 10px;
-    font-weight: bold;
-    color: #555;
-}
-
-#categoryFilter {
-    padding: 10px 15px;
-    border: 2px solid #ddd;
-    border-radius: 8px;
-    font-size: 16px;
-    background: white;
-    cursor: pointer;
-    transition: border-color 0.3s ease;
-}
-
-#categoryFilter:hover,
-#categoryFilter:focus {
-    border-color: #667eea;
-    outline: none;
-}
-
-.quote-display {
+    justify-content: space-between;
     background: #f8f9fa;
-    border-radius: 10px;
-    padding: 30px;
-    margin-bottom: 30px;
-    min-height: 120px;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    border: 1px solid #e9ecef;
+}
+
+.sync-indicator {
     display: flex;
     align-items: center;
-    justify-content: center;
+    gap: 10px;
+    font-size: 14px;
+    font-weight: 500;
 }
 
-#quoteDisplay {
-    text-align: center;
+.sync-indicator.online {
+    color: #28a745;
 }
 
-#quoteText {
-    font-size: 1.3em;
-    font-style: italic;
-    color: #333;
-    margin-bottom: 10px;
-    line-height: 1.6;
+.sync-indicator.offline {
+    color: #dc3545;
 }
 
-#quoteCategory {
-    font-size: 0.9em;
-    color: #666;
-    font-weight: bold;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+.sync-indicator.syncing {
+    color: #007bff;
 }
 
-.controls {
-    text-align: center;
-    margin-bottom: 30px;
+.sync-indicator.error {
+    color: #dc3545;
 }
 
-button {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+.sync-spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #007bff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    display: none;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+#manualSync {
+    padding: 8px 16px;
+    font-size: 14px;
+    background: #007bff;
     color: white;
     border: none;
-    padding: 12px 25px;
-    border-radius: 25px;
-    font-size: 16px;
+    border-radius: 4px;
     cursor: pointer;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    margin: 5px;
+    transition: background-color 0.3s;
 }
 
-button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+#manualSync:hover {
+    background: #0056b3;
 }
 
-button:active {
-    transform: translateY(0);
+/* Notification System */
+.notification-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    max-width: 300px;
 }
 
-.add-quote-section {
-    background: #f8f9fa;
-    border-radius: 10px;
-    padding: 25px;
-    margin-bottom: 20px;
-}
-
-.add-quote-section input {
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 15px;
-    border: 2px solid #ddd;
-    border-radius: 8px;
+.notification {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    margin-bottom: 10px;
+    border-radius: 6px;
+    color: white;
     font-size: 14px;
-    transition: border-color 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    animation: slideIn 0.3s ease-out;
 }
 
-.add-quote-section input:focus {
-    border-color: #667eea;
-    outline: none;
+.notification.success {
+    background-color: #28a745;
 }
 
-.storage-section {
+.notification.error {
+    background-color: #dc3545;
+}
+
+.notification.info {
+    background-color: #17a2b8;
+}
+
+.notification button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+    padding: 0;
+    margin-left: 10px;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Conflict Resolution Modal */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.modal-content {
+    background-color: white;
+    margin: 15% auto;
+    padding: 30px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 500px;
     text-align: center;
-    padding-top: 20px;
-    border-top: 1px solid #eee;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
 }
 
+.modal-content h3 {
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.modal-content p {
+    color: #666;
+    margin-bottom: 25px;
+    line-height: 1.5;
+}
+
+.conflict-options {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.conflict-options button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s;
+}
+
+.conflict-options button:first-child {
+    background-color: #007bff;
+    color: white;
+}
+
+.conflict-options button:nth-child(2) {
+    background-color: #28a745;
+    color: white;
+}
+
+.conflict-options button:last-child {
+    background-color: #ffc107;
+    color: #212529;
+}
+
+.conflict-options button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+/* Responsive Design */
 @media (max-width: 768px) {
-    .container {
-        padding: 20px;
+    .sync-status {
+        flex-direction: column;
+        gap: 10px;
     }
     
-    h1 {
-        font-size: 2em;
+    .notification-container {
+        left: 10px;
+        right: 10px;
+        max-width: none;
     }
     
-    #quoteText {
-        font-size: 1.1em;
+    .conflict-options {
+        flex-direction: column;
+        gap: 10px;
     }
     
-    button {
-        padding: 10px 20px;
-        font-size: 14px;
+    .conflict-options button {
+        width: 100%;
     }
 }
