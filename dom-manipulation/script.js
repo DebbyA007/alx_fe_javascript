@@ -30,17 +30,20 @@ function initializeServerSync() {
     // Simulate initial server connection
     setTimeout(() => {
         updateSyncStatus('online', 'Connected');
-        syncWithServer();
+        syncQuotes();
     }, 2000);
 }
 
-// Step 2: Data Syncing Logic
-async function syncWithServer() {
+// Check for the fetchQuotesFromServer function - Fetching data from server using mock API
+async function fetchQuotesFromServer() {
     try {
-        updateSyncStatus('syncing', 'Syncing...');
-        
         // Fetch data from JSONPlaceholder (simulating server quotes)
-        const response = await fetch("https://jsonplaceholder.typicode.com/posts");
+        const response = await fetch(`${SERVER_CONFIG.BASE_URL}${SERVER_CONFIG.POSTS_ENDPOINT}`);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
         const serverPosts = await response.json();
         
         // Convert posts to quote format
@@ -52,6 +55,51 @@ async function syncWithServer() {
             lastModified: Date.now(),
             source: 'server'
         }));
+        
+        return serverQuotes;
+        
+    } catch (error) {
+        console.error('Failed to fetch quotes from server:', error);
+        throw error;
+    }
+}
+
+// Posting data to server using mock API
+async function postQuoteToServer(quote) {
+    try {
+        const response = await fetch(`${SERVER_CONFIG.BASE_URL}${SERVER_CONFIG.POSTS_ENDPOINT}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                title: quote.text,
+                body: quote.category,
+                userId: 1
+            })
+        });
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const result = await response.json();
+        console.log('Quote posted to server:', result);
+        return result;
+        
+    } catch (error) {
+        console.error('Failed to post quote to server:', error);
+        throw error;
+    }
+}
+
+// Check for the syncQuotes function - Main sync function
+async function syncQuotes() {
+    try {
+        updateSyncStatus('syncing', 'Syncing...');
+        
+        // Fetch quotes from server
+        const serverQuotes = await fetchQuotesFromServer();
         
         // Check for conflicts and sync
         await handleDataSync(serverQuotes);
@@ -215,8 +263,13 @@ function addQuote() {
         
         showNotification('Quote added successfully', 'success');
         
-        // Optionally sync with server after adding
-        setTimeout(() => syncWithServer(), 1000);
+        // Post to server and then sync
+        postQuoteToServer(newQuote).then(() => {
+            setTimeout(() => syncQuotes(), 1000);
+        }).catch(error => {
+            console.error('Failed to post quote to server:', error);
+            showNotification('Quote saved locally, but failed to sync with server', 'warning');
+        });
     }
 }
 
@@ -349,7 +402,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.addEventListener('visibilitychange', function() {
         if (!document.hidden) {
             // Page became visible - sync with server
-            syncWithServer();
+            syncQuotes();
         }
     });
 });
