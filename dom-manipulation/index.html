@@ -10,64 +10,46 @@
     <div class="container">
         <h1>Dynamic Quote Generator</h1>
         
-        <!-- Step 3: Storage status display -->
-        <div class="storage-info">
-            <strong>Storage Status:</strong> <span id="storageStatus">Loading...</span>
-        </div>
-        
-        <div class="quote-display">
-            <div class="quote-text" id="quoteDisplay">Click "Show New Quote" to display a quote</div>
-            <div class="quote-category" id="categoryDisplay"></div>
-        </div>
-        
+        <!-- Category Filter Section -->
         <div class="filter-section">
             <label for="categoryFilter">Filter by Category:</label>
-            <select id="categoryFilter">
+            <select id="categoryFilter" onchange="filterQuotes()">
                 <option value="all">All Categories</option>
+                <!-- Dynamically populated categories -->
             </select>
         </div>
         
-        <div class="controls">
-            <button class="primary-btn" onclick="showRandomQuote()">Show New Quote</button>
-            <button class="secondary-btn" onclick="createAddQuoteForm()">Add Quote</button>
-        </div>
-        
-        <!-- Step 3: Import/Export controls -->
-        <div class="file-controls">
-            <h3>Import/Export Quotes</h3>
-            <button class="primary-btn" onclick="exportToJsonFile()">Export Quotes to JSON</button>
-            <br><br>
-            <label for="importFile">Import Quotes from JSON:</label>
-            <input type="file" id="importFile" accept=".json" onchange="importFromJsonFile(event)" />
-        </div>
-        
-        <div id="addQuoteForm" style="display: none;">
-            <div class="add-quote-form">
-                <h3>Add New Quote</h3>
-                <div class="form-group">
-                    <label for="newQuoteText">Quote:</label>
-                    <input type="text" id="newQuoteText" placeholder="Enter the quote text">
-                </div>
-                <div class="form-group">
-                    <label for="newQuoteCategory">Category:</label>
-                    <select id="newQuoteCategory">
-                        <option value="inspiration">Inspiration</option>
-                        <option value="motivation">Motivation</option>
-                        <option value="wisdom">Wisdom</option>
-                        <option value="humor">Humor</option>
-                        <option value="love">Love</option>
-                        <option value="life">Life</option>
-                    </select>
-                </div>
-                <div class="controls">
-                    <button class="primary-btn" onclick="addQuote()">Add Quote</button>
-                    <button class="secondary-btn" onclick="cancelAddQuote()">Cancel</button>
-                </div>
+        <!-- Quote Display Section -->
+        <div class="quote-display">
+            <div id="quoteDisplay">
+                <p id="quoteText">Click "Show New Quote" to get started!</p>
+                <p id="quoteCategory"></p>
             </div>
         </div>
+        
+        <!-- Controls Section -->
+        <div class="controls">
+            <button id="newQuote" onclick="showRandomQuote()">Show New Quote</button>
+        </div>
+        
+        <!-- Add Quote Form -->
+        <div class="add-quote-section">
+            <h2>Add New Quote</h2>
+            <form id="addQuoteForm">
+                <input type="text" id="newQuoteText" placeholder="Enter quote text" required>
+                <input type="text" id="newQuoteCategory" placeholder="Enter category" required>
+                <button type="submit">Add Quote</button>
+            </form>
+        </div>
+        
+        <!-- Export/Import Section -->
+        <div class="storage-section">
+            <button onclick="exportQuotes()">Export Quotes</button>
+            <input type="file" id="importFile" accept=".json" style="display: none;">
+            <button onclick="document.getElementById('importFile').click()">Import Quotes</button>
+        </div>
     </div>
-
-    <!-- Link to JavaScript file -->
+    
     <script src="script.js"></script>
 </body>
 </html>
