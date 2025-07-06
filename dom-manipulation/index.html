@@ -3,12 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dynamic Quote Generator</title>
+    <title>Dynamic Quote Generator with Server Sync</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
         <h1>Dynamic Quote Generator</h1>
+        
+        <!-- Sync Status Section -->
+        <div class="sync-status">
+            <div id="syncIndicator" class="sync-indicator offline">
+                <span id="syncText">Offline</span>
+                <div class="sync-spinner" id="syncSpinner"></div>
+            </div>
+            <button id="manualSync" onclick="syncWithServer()">Sync Now</button>
+        </div>
+        
+        <!-- Notification System -->
+        <div id="notificationContainer" class="notification-container"></div>
         
         <!-- Category Filter Section -->
         <div class="filter-section">
@@ -40,6 +52,19 @@
                 <input type="text" id="newQuoteCategory" placeholder="Enter category" required>
                 <button type="submit">Add Quote</button>
             </form>
+        </div>
+        
+        <!-- Conflict Resolution Modal -->
+        <div id="conflictModal" class="modal">
+            <div class="modal-content">
+                <h3>Data Conflict Detected</h3>
+                <p>Your local data conflicts with server data. How would you like to resolve this?</p>
+                <div class="conflict-options">
+                    <button onclick="resolveConflict('server')">Use Server Data</button>
+                    <button onclick="resolveConflict('local')">Keep Local Data</button>
+                    <button onclick="resolveConflict('merge')">Merge Both</button>
+                </div>
+            </div>
         </div>
         
         <!-- Export/Import Section -->
