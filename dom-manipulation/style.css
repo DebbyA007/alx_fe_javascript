@@ -1,6 +1,3 @@
-/* Previous styles remain the same, add these new styles */
-
-/* Sync Status Styles */
 .sync-status {
     display: flex;
     align-items: center;
@@ -98,6 +95,12 @@
 
 .notification.info {
     background-color: #17a2b8;
+}
+
+/* Conflict notification styling */
+.notification.conflict {
+    background-color: #ff6b35;
+    border-left: 4px solid #ff4500;
 }
 
 .notification button {
